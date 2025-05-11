@@ -1,4 +1,3 @@
-import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -18,6 +17,19 @@ export const metadata: Metadata = {
   keywords: "learning, education, online courses, e-learning, LMS",
 }
 
+// Client-side providers component to isolate client-side features
+function ClientProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <LoadingProvider>
+        <GlobalLoading />
+        {children}
+        <Toaster />
+      </LoadingProvider>
+    </ThemeProvider>
+  )
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,15 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className="min-h-screen bg-background font-sans antialiased transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <LoadingProvider>
-            <GlobalLoading />
-            {children}
-            <Toaster />
-          </LoadingProvider>
-        </ThemeProvider>
+        {/* Server-rendered part */}
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   )
 }
-
